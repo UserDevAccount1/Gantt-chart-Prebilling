@@ -102,8 +102,464 @@ h1{ margin:0; font-size:24px; } p.lead{ margin:4px 0 0; color:var(--muted); font
   <button id="closePhaseWindow">X</button>
   <div id="phaseContent"></div>
 </div>
+<!-- Bottom Navbar with Folder Buttons -->
+<div style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:center; gap:10px; padding:10px 0; box-shadow:0 -4px 10px rgba(0,0,0,0.05); z-index:200;">
+  <button class="btn" onclick="openFolder('manual')">Manual Monitoring Workflow</button>
+  <button class="btn" onclick="openFolder('automation')">Automation Monitoring Workflow</button>
+  <button class="btn" onclick="openFolder('external')">External Data & Templates Required for End-to-End Manual Workflow</button>
+</div>
 
 <script>
+
+    // Folder Floating Windows
+function openFolder(folder) {
+  let html = '';
+  if(folder === 'manual'){
+  html = `
+  <h2>Manual Monitoring Workflow 🧭 Admin Overview</h2>
+
+  <h3>1. Overview</h3>
+  <p>The Excis Prebilling Dashboard is a centralized, human-operated platform for managing the full HCL Prebilling Upload and Approval process without AI automation. It replaces the automated AI agent by introducing a role-based, interactive dashboard where Finance, SDM, and Admin users manually perform, verify, and approve each billing step. This system ensures traceability, compliance, and manual control over all billing processes while providing real-time visibility of progress through monitoring panels and table management modules.</p>
+
+  <h3>2. Main Admin Overview 👑</h3>
+  <p><strong>Purpose:</strong> Oversees entire billing lifecycle across all regions and customers.</p>
+  <ul>
+    <li>Create and manage billing cycles</li>
+    <li>Monitor workflow progress and user activities</li>
+    <li>Manage access control (FSO, SDM, PO users)</li>
+    <li>Consolidate regional prebilling data</li>
+    <li>Upload to the HCL FSO Portal</li>
+    <li>Ensure final approval and audit compliance</li>
+  </ul>
+
+  <h4>Admin Dashboard Layout (Core Components)</h4>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Section</th><th>Description</th><th>Mandatory Elements</th></tr>
+    <tr><td>Dashboard Overview Panel</td><td>Summary view of all billing cycles, status counts, pending tasks, and alerts.</td><td>Cycle list, completion bar, overdue alerts, monthly totals chart</td></tr>
+    <tr><td>Billing Cycle Management</td><td>Create and manage billing months (e.g., “October 2025”).</td><td>“Create Cycle” button, cycle table, close cycle control</td></tr>
+    <tr><td>User & Role Management</td><td>Add, deactivate, and assign user roles (FSO, SDM, PO).</td><td>Role dropdown, add/edit user modal, access level matrix</td></tr>
+    <tr><td>Regional Data Tables</td><td>Consolidated tables for all ticket uploads per region.</td><td>Ticket table with filters (region, customer, status)</td></tr>
+    <tr><td>File Upload & Approval Logs</td><td>Track every file submission, approval, or rejection.</td><td>Upload timestamp, uploader name, file type, approval status</td></tr>
+    <tr><td>Monitoring Panel</td><td>Real-time tracker of workflow completion per customer or region.</td><td>Live status tiles, trend charts, team performance table</td></tr>
+    <tr><td>Audit & Activity Log</td><td>Record of all dashboard actions for compliance.</td><td>Date, action, user, file reference, outcome</td></tr>
+    <tr><td>Communication Feed (Teams Sync)</td><td>Displays all Teams notifications or billing alerts.</td><td>Auto-sync messages (sent/received)</td></tr>
+  </table>
+
+  <h3>3. End-to-End Manual Billing Workflow ⚙️</h3>
+  <ol>
+    <li><strong>Create and Initialize Billing Cycle</strong> (Main Admin)
+      <ul>
+        <li>Log in → Billing Cycle Manager</li>
+        <li>Click “Create New Cycle”, select month/year</li>
+        <li>Assign regional FSO and SDM leads</li>
+        <li>Lock/open cycle for data entry</li>
+        <li>Mandatory: Create Cycle Form, Cycle Status Table, Cycle Progress Bar</li>
+      </ul>
+    </li>
+    <li><strong>Ticket Data Upload (Regional Stage)</strong> (SDM Users, Admin Oversight)
+      <ul>
+        <li>Upload ticket file per region (Excel/CSV)</li>
+        <li>Validate columns & ticket details</li>
+        <li>Mark upload as Validated</li>
+        <li>Mandatory: Data Upload Tracker Table, Notification Toggle</li>
+      </ul>
+    </li>
+    <li><strong>Rate Card Assignment</strong> (FSO, Verified by Admin)
+      <ul>
+        <li>Select appropriate rate card</li>
+        <li>Admin reviews and approves</li>
+        <li>Mandatory: Rate Card Management Table, Approval Button, Change Log Panel</li>
+      </ul>
+    </li>
+    <li><strong>Manual Computation & Verification</strong> (FSO, Monitored by Admin)
+      <ul>
+        <li>FSO calculates totals manually</li>
+        <li>Admin reviews anomalies and validates subtotals</li>
+        <li>Mandatory: Billing Table (editable), Computation Review Tool, Approve/Reject Buttons</li>
+      </ul>
+    </li>
+    <li><strong>Consolidation & Upload to HCL</strong> (Admin)
+      <ul>
+        <li>Merge regional files</li>
+        <li>Validate currency and totals</li>
+        <li>Upload to HCL FSO Portal and log reference</li>
+        <li>Mandatory: File Merge Tool, Currency Validator, Upload Button, Upload Log Table</li>
+      </ul>
+    </li>
+    <li><strong>Review & Monitoring</strong> (Admin & FSO)
+      <ul>
+        <li>Monitor HCL feedback</li>
+        <li>Update record status manually</li>
+        <li>Notify SDM via Teams</li>
+        <li>Mandatory: Review Tracker Table, Notify SDM Button, Summary Graph</li>
+      </ul>
+    </li>
+    <li><strong>Query Resolution & Resubmission</strong> (SDM/FSO, Verified by Admin)
+      <ul>
+        <li>Correct ticket/rate mismatch</li>
+        <li>Reupload corrected file</li>
+        <li>Mark as “Resubmitted” and update timeline</li>
+        <li>Mandatory: Rejected Files Queue, Correction History Modal, Resubmission Tracker Chart</li>
+      </ul>
+    </li>
+    <li><strong>Final Approval & Invoice Preparation</strong> (Admin)
+      <ul>
+        <li>Review all regions marked “Approved”</li>
+        <li>Click “Generate Invoice Summary”</li>
+        <li>Export report for Finance Team</li>
+        <li>Mandatory: Invoice Summary Table, Export Controls, Cycle Close Control</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3>4. Admin Monitoring Panel 🧩</h3>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Panel Section</th><th>Description</th><th>Mandatory Data</th></tr>
+    <tr><td>Cycle Status Tracker</td><td>Displays all billing cycles with percentage completion.</td><td>Cycle ID, Month, Created By, % Done, Region Count</td></tr>
+    <tr><td>Regional Upload Tracker</td><td>Tracks ticket uploads and validation per region.</td><td>Region, SDM Name, Upload Date, File Count, Validation Status</td></tr>
+    <tr><td>Rate Card Audit Viewer</td><td>Lists all assigned rate cards for audit comparison.</td><td>Customer, Version, Assigned On, Verified By</td></tr>
+    <tr><td>Computation Progress</td><td>Visual progress bars for each region’s manual billing computation.</td><td>Total Tickets, Computed %, Verified %</td></tr>
+    <tr><td>HCL Review Monitor</td><td>Shows review outcomes and pending rejections.</td><td>Customer, Upload ID, Status, Comment</td></tr>
+    <tr><td>User Activity Log</td><td>Logs actions from all users (FSO, SDM, Admin).</td><td>User, Action, Timestamp, Module</td></tr>
+    <tr><td>Summary Metrics Board</td><td>KPI metrics for billing</td><td>Counts, Charts, % Trends</td></tr>
+  </table>
+
+  <h3>5. Table Management System 📋</h3>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Table Name</th><th>Purpose</th><th>Visible To</th><th>Editable By</th></tr>
+    <tr><td>Ticket Table</td><td>Stores ticket upload data per region</td><td>SDM, FSO, Admin</td><td>SDM, FSO</td></tr>
+    <tr><td>Rate Card Table</td><td>Contains JSON rate card entries per customer</td><td>FSO, Admin</td><td>Admin</td></tr>
+    <tr><td>Billing Computation Table</td><td>Lists computed totals manually calculated by FSO</td><td>FSO, Admin</td><td>FSO</td></tr>
+    <tr><td>Cycle Table</td><td>Master table for all billing cycles</td><td>Admin</td><td>Admin</td></tr>
+    <tr><td>Upload Log Table</td><td>Tracks uploaded files, timestamps, and status</td><td>FSO, Admin</td><td>Admin</td></tr>
+    <tr><td>Review Tracker Table</td><td>Displays HCL approval or rejection outcomes</td><td>FSO, Admin</td><td>Admin</td></tr>
+    <tr><td>Audit Log Table</td><td>Records every user activity</td><td>Admin</td><td>System-only</td></tr>
+  </table>
+
+  <h3>6. Security & Access Control 🔒</h3>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Role</th><th>Access Scope</th><th>Permissions</th></tr>
+    <tr><td>Main Admin</td><td>Full system access</td><td>Create cycles, manage users, approve rates, consolidate files, monitor progress</td></tr>
+    <tr><td>FSO Team</td><td>Regional billing and rate computation</td><td>Upload data, calculate totals, update status</td></tr>
+    <tr><td>SDM Team</td><td>Ticket validation and correction</td><td>Upload regional files, validate records</td></tr>
+    <tr><td>PO Team</td><td>Read-only audit and financial checks</td><td>View summaries, reports, no edits</td></tr>
+    <tr><td>Finance</td><td>Post-approval invoice generation</td><td>View and export invoice summaries</td></tr>
+  </table>
+
+  <h3>7. Mandatory Dashboard Components 🧱</h3>
+  <ul>
+    <li>Top Navigation Bar: Quick access to modules</li>
+    <li>Cycle Manager Card View: Current month cycles</li>
+    <li>Monitoring Panel: KPI widgets, cycle progress, review tracking</li>
+    <li>Activity Feed Panel: Real-time user actions</li>
+    <li>File Upload Modal: Supports Excel/CSV</li>
+    <li>Teams Notification Widget</li>
+    <li>Export Panel: Download audit, billing, or summary reports</li>
+  </ul>
+
+  <h3>8. Example Admin Dashboard Snapshot 📈</h3>
+  <ul>
+    <li>Active Billing Cycles: 4</li>
+    <li>Pending Uploads: 3</li>
+    <li>Approved Files: 26</li>
+    <li>Rejected Files: 2</li>
+    <li>Charts: Regional Completion %, Approval Trend Over Time</li>
+    <li>Activity Log: Sample actions with timestamps</li>
+  </ul>
+
+  <h3>9. Deliverables ✅</h3>
+  <ul>
+    <li>Manual workflow steps and access roles established</li>
+    <li>Dashboard modules and feature list documented</li>
+    <li>Monitoring and table management structures defined</li>
+    <li>Security, audit, and governance enforced</li>
+  </ul>
+  `;
+  phaseContent.innerHTML = html;
+  phaseWindow.style.display = 'block';
+}
+ else if(folder === 'automation'){
+  html = `
+  <h2>Automation Monitoring Workflow 🧭 Executive Summary</h2>
+  <ul>
+    <li>Convert the manual Excis Prebilling workflow into a fully automated pipeline (n8n / agent workflows).</li>
+    <li>Dashboard is a real-time monitoring console (horizontal step-by-step progress bar + management tables).</li>
+    <li>Admin can observe, pause/resume, override, edit data, or ask the AI agent to fix data at any step.</li>
+    <li>All data (tickets, rate cards, computations, uploads, review results) live in the dashboard’s DB and are the single source of truth.</li>
+    <li>Automation executes end-to-end with no human touch required except in exception cases.</li>
+  </ul>
+
+  <h3>1 — End-to-end automated flow (high level)</h3>
+  <ol>
+    <li>Trigger — Scheduled (1st business day) or manual via Dashboard.</li>
+    <li>Ingest — Fetch ticket files and evidence from SharePoint / Service Desk / SFTP / API or dashboard DB.</li>
+    <li>Validate — Structural & business validation rules; route invalid records to exception queue.</li>
+    <li>Rate Matching — Query internal rate_card_table (DB) and attach rates.</li>
+    <li>Compute — Apply formulas (hourly/day/month, multipliers, travel). Produce per-ticket totals + audit metadata.</li>
+    <li>Generate Files — Populate HCL prebilling template (Excel/JSON) and store in repository.</li>
+    <li>Consolidate & Upload — Merge region files, upload to HCL FSO Portal (API/RPA), store upload ref.</li>
+    <li>Monitor Approval — Poll HCL portal for status; fetch approval/rejection comments.</li>
+    <li>Auto-resolution — For automatable rejects (rate mismatch), auto-correct and re-submit; else notify Admin/SDM.</li>
+    <li>Invoice Trigger & Archive — On final approval, trigger invoicing system and archive logs & artifacts.</li>
+  </ol>
+
+  <p>All steps run as workflow nodes in n8n (or equivalent). The dashboard subscribes to workflow events (Webhooks / WebSocket) for live updates.</p>
+
+  <h3>2 — Automation Modules (node-by-node)</h3>
+  <p>For each step: recommended node type, inputs, outputs, checks, and admin actions.</p>
+  <ul>
+    <li><strong>2.1 Trigger:</strong> Cron node OR Manual webhook, inputs: Billing month, override flags; admin: Start/Stop/Run now button.</li>
+    <li><strong>2.2 Ingest / Data Fetcher:</strong> HTTP / SharePoint / SFTP / DB nodes; inputs: source paths, cycle ID; validation: schema checks; admin: re-run fetch, upload missing files.</li>
+    <li><strong>2.3 Pre-Validation:</strong> Function/Script node; checks: columns, types, duplicates; admin: Exception table, Accept/Reject/Correct, AI-Fix.</li>
+    <li><strong>2.4 Rate Card Lookup:</strong> Database/HTTP node; inputs: customer/region/service; outputs: matched rate; admin: view/edit, request AI suggestion.</li>
+    <li><strong>2.5 Computation Engine:</strong> Function/Code node; logic: hourly/day/FTE/multipliers; outputs: totals, audit metadata; admin: live preview, override toggle.</li>
+    <li><strong>2.6 File Generator:</strong> Excel/JSON node; outputs: prebilling files; admin: preview, download, regenerate.</li>
+    <li><strong>2.7 Consolidation & Upload:</strong> Merge + API/RPA node; outputs: upload reference; admin: upload status, reupload/rollback.</li>
+    <li><strong>2.8 Approval Tracker:</strong> Polling/Webhook; outputs: status events; admin: live timeline, force approve.</li>
+    <li><strong>2.9 Auto-Resolution Handler:</strong> Decision + script; admin: auto-correct or notify for manual intervention.</li>
+    <li><strong>2.10 Invoice Trigger & Archival:</strong> HTTP + DB archival; outputs: invoice, archived logs; admin: download, archive link.</li>
+  </ul>
+
+  <h3>3 — Dashboard Monitoring UI</h3>
+  <p>Horizontal step tracker with clickable tiles (Trigger → Ingest → Validate → Rate Match → Compute → File Gen → Consolidate → Upload → Approval → Invoice). Each tile opens management pane with stats, logs, and controls.</p>
+
+  <h3>4 — Management Table(s)</h3>
+  <p>Shows per-customer/per-cycle details: Cycle ID, Customer, Region, Status, Step, Processed, Errors, Last Action, Upload Ref, SLA Timer, Actions (View/Retry/Pause/Override/AI-Fix). Rows expandable for timeline & raw file links.</p>
+
+  <h3>5 — Admin Interventions & AI-Assisted Fixes</h3>
+  <ul>
+    <li>Edit record inline — resume workflow from last failed step.</li>
+    <li>Pause workflow at step — only affected nodes.</li>
+    <li>Retry, Skip, AI-Fix — integrate AI suggestions.</li>
+  </ul>
+
+  <h3>6 — Mandatory Dashboard Features & Controls</h3>
+  <ul>
+    <li>Horizontal step tracker</li>
+    <li>Management table, exception editor, AI-Fix button</li>
+    <li>Play/Pause/Retry/Re-run controls</li>
+    <li>File preview & download, upload reference, full audit log, RBAC, SLA timer</li>
+    <li>Metrics dashboard (daily/weekly/monthly KPIs)</li>
+  </ul>
+
+  <h3>7 — Required APIs & Endpoints</h3>
+  <ul>
+    <li>POST /api/automation/start — start cycle</li>
+    <li>POST /api/automation/pause — pause cycle/step</li>
+    <li>POST /api/automation/retry — retry node</li>
+    <li>POST /api/automation/override — manual override</li>
+    <li>POST /api/automation/aifix — request AI fix</li>
+    <li>GET /api/automation/status/&lt;cycle_id&gt;</li>
+    <li>GET /api/management/table — filtered rows</li>
+    <li>GET /api/logs/&lt;cycle_id&gt; — step logs</li>
+    <li>GET /api/files/&lt;file_id&gt; — download file</li>
+    <li>GET /api/metrics — dashboard KPIs</li>
+  </ul>
+
+  <h3>8 — DB Key Tables & Minimal Schema</h3>
+  <ul>
+    <li>cycle_table, ticket_table, rate_card_table, computation_table, upload_log_table, review_table, exception_table, audit_table</li>
+  </ul>
+
+  <h3>9 — Error Handling & SLA Policies</h3>
+  <ul>
+    <li>Transient errors: auto-retry with exponential backoff, then notify Admin</li>
+    <li>Deterministic errors: route to exception queue</li>
+    <li>SLA timer & reconciliation checks</li>
+  </ul>
+
+  <h3>10 — Security & Governance</h3>
+  <ul>
+    <li>RBAC + SSO, Audit logging, Encryption, Role-approval gating</li>
+  </ul>
+
+  <h3>11 — Alerts & Notifications</h3>
+  <ul>
+    <li>Real-time WebSocket, Teams, Email, On-screen toast</li>
+  </ul>
+
+  <h3>12 — KPIs & Monitoring Metrics</h3>
+  <ul>
+    <li>Cycle throughput, mean processing time, automation %, exceptions, time-to-resolution, upload success rate, invoice readiness</li>
+  </ul>
+
+  <h3>13 — Developer Handoff Checklist</h3>
+  <ol>
+    <li>Build DB schema + API skeleton</li>
+    <li>Implement n8n workflows + Webhook connectors</li>
+    <li>Event bus for horizontal tracker</li>
+    <li>Management table & per-step panes</li>
+    <li>Exception editor + AI-Fix integration</li>
+    <li>RBAC, audit logging, Teams/email integration</li>
+    <li>Test harness & HCL portal simulation</li>
+    <li>Deploy monitoring & KPI dashboard</li>
+  </ol>
+
+  <h3>14 — UI Wireframe Notes</h3>
+  <ul>
+    <li>Top: Cycle selector + Play/Pause + Run now</li>
+    <li>Middle: Horizontal step tracker</li>
+    <li>Bottom-left: Management table</li>
+    <li>Bottom-right: Exception queue + AI-Fix modal</li>
+    <li>Header notification bar: SLA alerts, unread incidents</li>
+  </ul>
+
+  <h3>15 — Example Admin Actions During a Run</h3>
+  <ul>
+    <li>Click “Validate” tile → exception list → pick records → AI-Fix → Accept → workflow auto-runs</li>
+    <li>Click “Pause” on Upload tile → edit totals → Re-Run Upload</li>
+  </ul>
+  `;
+  phaseContent.innerHTML = html;
+  phaseWindow.style.display = 'block';
+}
+else if(folder === 'external'){
+  html = `
+  <h2>External Data & Templates 📦</h2>
+  <p>(Fetched, Uploaded, or Referenced Inside the Dashboard)</p>
+  <p>This section identifies all files, datasets, and templates needed by the Admin, FSO, and SDM to complete one full billing cycle within the Excis Prebilling Manual Dashboard. These datasets may come from external systems (SharePoint, Teams, HCL Portal) or other teams and must be fetched or uploaded to the dashboard.</p>
+
+  <h3>1. Data Categories Overview 🧭</h3>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Category</th><th>Description</th><th>Format</th><th>Source</th></tr>
+    <tr><td>Operational Data</td><td>Daily ticket data and activity logs for each region</td><td>Excel / CSV</td><td>SDM / Regional Teams</td></tr>
+    <tr><td>Rate & Pricing Data</td><td>Current rate cards, pricing templates, customer mappings</td><td>Excel</td><td>FSO / Finance</td></tr>
+    <tr><td>Customer Configuration Data</td><td>Customer list, cost center codes, regional assignments</td><td>Excel / Master Sheet</td><td>FSO</td></tr>
+    <tr><td>Cycle & Control Data</td><td>Month cycle setup, deadlines, assigned roles</td><td>Dashboard Internal</td><td>Admin</td></tr>
+    <tr><td>Review & Feedback Data</td><td>HCL review results, rejection notes</td><td>Excel / PDF</td><td>HCL Portal</td></tr>
+    <tr><td>Invoice Templates</td><td>Invoice structure and calculation templates</td><td>Excel / PDF</td><td>Finance Department</td></tr>
+    <tr><td>Supporting Documents</td><td>Ticket evidence, approval emails, attachments</td><td>PDF / ZIP</td><td>SDM / Teams / SharePoint</td></tr>
+    <tr><td>Audit & Activity Logs</td><td>User activity history</td><td>Dashboard Internal</td><td>System-Generated</td></tr>
+  </table>
+
+  <h3>2. Data to be Fetched or Uploaded per Workflow Step ⚙️</h3>
+
+  <h4>Step 1 – Billing Cycle Initialization</h4>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Type</th><th>Source</th><th>Format</th><th>Purpose</th></tr>
+    <tr><td>Customer Master List</td><td>FSO</td><td>Excel</td><td>Auto-fill region/customer setup</td></tr>
+    <tr><td>Previous Cycle Configuration</td><td>Dashboard / FSO</td><td>JSON / CSV</td><td>Duplicate last month’s settings</td></tr>
+    <tr><td>Regional Owner List</td><td>HR / Ops</td><td>Excel</td><td>Assign SDMs per region</td></tr>
+  </table>
+  <p><strong>Admin Action:</strong> Fetch existing customer data and past cycle setup or upload latest customer master sheet.</p>
+
+  <h4>Step 2 – Ticket Upload & Validation</h4>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Type</th><th>Source</th><th>Format</th><th>Purpose</th></tr>
+    <tr><td>Regional Ticket Files</td><td>SDM Teams</td><td>Excel</td><td>Ticket-level service data</td></tr>
+    <tr><td>Ticket Evidence Attachments</td><td>SDM / SharePoint</td><td>PDF / ZIP</td><td>Proof/documentation for tickets</td></tr>
+    <tr><td>Validation Rules Template</td><td>Internal</td><td>Excel</td><td>Check ticket formatting</td></tr>
+    <tr><td>Prior Cycle Ticket Data</td><td>Dashboard</td><td>Stored / CSV</td><td>Reconciliation / comparison</td></tr>
+  </table>
+  <p><strong>Admin/SDM Action:</strong> Fetch existing ticket data, upload/replace files, attach supporting PDFs.</p>
+
+  <h4>Step 3 – Rate Card Assignment & Management</h4>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Type</th><th>Source</th><th>Format</th><th>Purpose</th></tr>
+    <tr><td>Current Rate Card File</td><td>FSO</td><td>Excel</td><td>Rate per role/region/customer</td></tr>
+    <tr><td>Rate Card Change Log</td><td>Finance / FSO</td><td>Excel / PDF</td><td>Track approved rate changes</td></tr>
+    <tr><td>Customer to Rate Mapping</td><td>Dashboard</td><td>Stored Table</td><td>Link customer to correct rate</td></tr>
+  </table>
+  <p><strong>Admin/FSO Action:</strong> Fetch existing rate cards, upload/edit templates, store approval PDFs.</p>
+
+  <h4>Step 4 – Billing Computation & Verification</h4>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Type</th><th>Source</th><th>Format</th><th>Purpose</th></tr>
+    <tr><td>Computation Template</td><td>FSO / Finance</td><td>Excel</td><td>Standard billing calculation format</td></tr>
+    <tr><td>Ticket Data</td><td>Dashboard</td><td>Stored</td><td>Source for billing totals</td></tr>
+    <tr><td>Rate Card</td><td>Dashboard</td><td>Stored</td><td>Used for calculations</td></tr>
+    <tr><td>Manual Adjustment Sheet</td><td>Finance</td><td>Excel</td><td>Optional overrides</td></tr>
+  </table>
+  <p><strong>Admin/FSO Action:</strong> Fetch tickets and rate card, import computation template, save verified results.</p>
+
+  <h4>Step 5 – Consolidation & Upload to HCL</h4>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Type</th><th>Source</th><th>Format</th><th>Purpose</th></tr>
+    <tr><td>Consolidated Prebilling Template</td><td>Dashboard Auto-Generated</td><td>Excel</td><td>Standard HCL upload format</td></tr>
+    <tr><td>Cycle Summary File</td><td>System / Admin</td><td>Excel</td><td>Upload validation</td></tr>
+    <tr><td>Upload Confirmation Sheet</td><td>HCL Portal</td><td>PDF</td><td>Reference proof</td></tr>
+  </table>
+  <p><strong>Admin Action:</strong> Fetch validated data, generate consolidated file, upload to HCL, store confirmation PDF.</p>
+
+  <h4>Step 6 – HCL Review & Feedback Handling</h4>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Type</th><th>Source</th><th>Format</th><th>Purpose</th></tr>
+    <tr><td>Review Results</td><td>HCL Portal</td><td>Excel / PDF</td><td>Approval/rejection feedback</td></tr>
+    <tr><td>Review Log Template</td><td>FSO</td><td>Excel</td><td>Log review remarks manually</td></tr>
+    <tr><td>Feedback Comments</td><td>Dashboard</td><td>Stored</td><td>Resolution tracking</td></tr>
+  </table>
+  <p><strong>Admin/FSO Action:</strong> Fetch HCL feedback, upload to dashboard, update review status table.</p>
+
+  <h4>Step 7 – Query Resolution & Resubmission</h4>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Type</th><th>Source</th><th>Format</th><th>Purpose</th></tr>
+    <tr><td>Rejected Records File</td><td>HCL Feedback</td><td>Excel</td><td>Identify tickets to fix</td></tr>
+    <tr><td>Corrected Ticket Data</td><td>SDM / Admin</td><td>Excel</td><td>Replacement upload</td></tr>
+    <tr><td>Resubmission Log</td><td>Dashboard</td><td>Stored</td><td>Track correction activity</td></tr>
+  </table>
+  <p><strong>Admin/SDM Action:</strong> Fetch rejected records, upload corrected files, store resubmission notes.</p>
+
+  <h4>Step 8 – Final Approval & Invoice Preparation</h4>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Type</th><th>Source</th><th>Format</th><th>Purpose</th></tr>
+    <tr><td>Invoice Template</td><td>Finance</td><td>Excel / PDF</td><td>Billing summary</td></tr>
+    <tr><td>Approved Computation Data</td><td>Dashboard</td><td>Stored</td><td>Final invoice totals</td></tr>
+    <tr><td>Final Approval Sheet</td><td>Finance / HCL</td><td>PDF</td><td>Confirmation of approval</td></tr>
+    <tr><td>KPI Summary Sheet</td><td>Dashboard</td><td>Excel</td><td>Monthly performance report</td></tr>
+  </table>
+  <p><strong>Admin Action:</strong> Fetch approved computations, populate invoice template, export PDF invoice, upload to Finance.</p>
+
+  <h3>3. Summary Table – Data Fetching Sources & Storage 🗂️</h3>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Data Type</th><th>Source</th><th>Format</th><th>Destination in Dashboard</th><th>Update Frequency</th></tr>
+    <tr><td>Ticket Data</td><td>SDM</td><td>Excel</td><td>ticket_table</td><td>Monthly</td></tr>
+    <tr><td>Rate Card</td><td>FSO / Finance</td><td>Excel</td><td>rate_card_table</td><td>As needed</td></tr>
+    <tr><td>Customer Master</td><td>FSO</td><td>Excel</td><td>customer_table</td><td>Quarterly</td></tr>
+    <tr><td>Computation</td><td>Dashboard / FSO</td><td>Stored</td><td>computation_table</td><td>Monthly</td></tr>
+    <tr><td>Review Results</td><td>HCL</td><td>Excel / PDF</td><td>review_table</td><td>After each upload</td></tr>
+    <tr><td>Invoice Template</td><td>Finance</td><td>Excel / PDF</td><td>invoice_table</td><td>Monthly</td></tr>
+    <tr><td>Audit Logs</td><td>System</td><td>JSON / Internal</td><td>audit_table</td><td>Continuous</td></tr>
+    <tr><td>Evidence Files</td><td>SDM / SharePoint</td><td>PDF / ZIP</td><td>File Storage Directory</td><td>As needed</td></tr>
+  </table>
+
+  <h3>4. Typical External File Templates 🧾</h3>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Template Name</th><th>Description</th><th>Expected Columns / Fields</th></tr>
+    <tr><td>Ticket Upload Template</td><td>Used by SDMs to upload ticket data</td><td>Ticket ID, Date, Region, Customer, Hours, Description, Category</td></tr>
+    <tr><td>Rate Card Template</td><td>Standard rate reference</td><td>Customer, Role, Hourly Rate, Currency, Valid From, Valid To</td></tr>
+    <tr><td>Computation Template</td><td>Used by FSO to verify calculations</td><td>Ticket ID, Rate, Hours, Subtotal, Region Total</td></tr>
+    <tr><td>Prebilling Upload Template</td><td>Consolidated file for HCL</td><td>Region, Customer, Hours, Amount, Total, Upload ID</td></tr>
+    <tr><td>Review Log Template</td><td>To record HCL feedback</td><td>Cycle ID, Region, Status, Remarks, Reviewer</td></tr>
+    <tr><td>Invoice Template</td><td>Used to generate client invoice</td><td>Customer, Period, Total Amount, VAT, Grand Total</td></tr>
+  </table>
+
+  <h3>5. Admin Fetching Responsibilities 📂</h3>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <tr><th>Data</th><th>Responsibility</th><th>Fetch Method</th></tr>
+    <tr><td>Customer Master</td><td>Admin</td><td>Upload or import Excel</td></tr>
+    <tr><td>Rate Card</td><td>Admin / FSO</td><td>Fetch from DB or upload new</td></tr>
+    <tr><td>Ticket Data</td><td>Admin / SDM</td><td>Fetch stored or upload</td></tr>
+    <tr><td>Review Feedback</td><td>Admin / FSO</td><td>Upload PDF/Excel from HCL</td></tr>
+    <tr><td>Invoice Template</td><td>Admin</td><td>Upload new Finance template</td></tr>
+    <tr><td>Audit Reports</td><td>Admin</td><td>Fetch from system log export</td></tr>
+  </table>
+
+  <h3>6. Notes ✅</h3>
+  <ul>
+    <li>All uploaded Excel, PDF, or templates are stored in dashboard DB or file repository.</li>
+    <li>Data fetched must be verified with latest approved version.</li>
+    <li>Dashboard should allow version tagging (e.g., RateCard_v3_2025-10).</li>
+    <li>Admin should maintain a "Fetch & Update Register" — showing what data was fetched, from where, and when.</li>
+  </ul>
+  `;
+  phaseContent.innerHTML = html;
+  phaseWindow.style.display = 'block';
+}
+
+
+  phaseContent.innerHTML = html;
+  phaseWindow.style.display = 'block';
+}
 // --- Helper Functions ---
 function addDays(d,n){ let x=new Date(d); x.setDate(x.getDate()+n); return x; }
 function daysBetween(a,b){ return Math.round((b-a)/(1000*60*60*24)); }
