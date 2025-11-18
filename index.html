@@ -104,9 +104,12 @@ h1{ margin:0; font-size:24px; } p.lead{ margin:4px 0 0; color:var(--muted); font
 </div>
 <!-- Bottom Navbar with Folder Buttons -->
 <div style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:center; gap:10px; padding:10px 0; box-shadow:0 -4px 10px rgba(0,0,0,0.05); z-index:200;">
+  
   <button class="btn" onclick="openFolder('manual')">Manual Monitoring Workflow</button>
   <button class="btn" onclick="openFolder('automation')">Automation Monitoring Workflow</button>
   <button class="btn" onclick="openFolder('external')">External Data & Templates Required for End-to-End Manual Workflow</button>
+  <button class="btn" onclick="openFolder('accomplishment')">Accomplishment Folder</button>
+
 </div>
 
 <script>
@@ -555,8 +558,99 @@ else if(folder === 'external'){
   phaseContent.innerHTML = html;
   phaseWindow.style.display = 'block';
 }
+else if (folder === 'accomplishment') {
+    html = `
+      <h2>Accomplishment Folder 📁</h2>
+      <p>Task Tracking from September – November 8</p>
 
+      <!-- Static Table -->
+      <!-- Updated Table -->
+<table id="taskTable" border="1" cellpadding="7" cellspacing="0" width="100%">
+  <thead>
+    <tr style="background:#f5f5f5;">
+      <th>#</th>
+      <th>Task Description</th>
+      <th>Start Date</th>
+      <th>Date Finished</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Customer and account development</td>
+      <td>2025-09-30</td>
+      <td>2025-10-04</td>
+      <td class="status-done">Done ✔️</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Customer & account add/delete/edit panel functions</td>
+      <td>2025-11-11</td>
+      <td>2025-11-15</td>
+      <td class="status-done">Done ✔️</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Rate card dashboard - initial release</td>
+      <td>2025-11-13</td>
+      <td>2025-11-13</td>
+      <td class="status-done">Done ✔️</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>PO dashboard revision - add exchange rate</td>
+      <td>2025-11-04</td>
+      <td>2025-11-08</td>
+      <td class="status-done">Done ✔️</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>PO Dashboard revision - add columns and change cards</td>
+      <td>2025-11-17</td>
+      <td>---</td>
+      <td class="status-pending">Pending</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Add User Management PO functionalities</td>
+      <td>2025-11-13</td>
+      <td>2025-11-13</td>
+      <td class="status-done">Done ✔️</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Develop PO dashboard</td>
+      <td>2025-09-16</td>
+      <td>2025-10-01</td>
+      <td class="status-done">Done ✔️</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Dashboard interface and functionalities</td>
+      <td>2025-09-18</td>
+      <td>2025-10-05</td>
+      <td class="status-done">Done ✔️</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>User management revision v0.1 + CRUD</td>
+      <td>2025-1-11</td>
+      <td>2025-11-11</td>
+      <td class="status-done">Done ✔️</td>
+    </tr>
+  </tbody>
+</table>
 
+<style>
+  .status-done { color: green; font-weight: bold; }
+  .status-progress { color: orange; font-weight: bold; }
+  .status-pending { color: red; font-weight: bold; }
+</style>
+    `;
+  }
+
+  // Display content in the floating window
   phaseContent.innerHTML = html;
   phaseWindow.style.display = 'block';
 }
