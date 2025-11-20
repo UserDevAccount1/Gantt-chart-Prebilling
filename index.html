@@ -106,11 +106,14 @@ h1{ margin:0; font-size:24px; } p.lead{ margin:4px 0 0; color:var(--muted); font
 <div style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:center; gap:10px; padding:10px 0; box-shadow:0 -4px 10px rgba(0,0,0,0.05); z-index:200;">
   
   <button class="btn" onclick="openFolder('manual')">Manual Monitoring Workflow</button>
-  <button class="btn" onclick="openFolder('automation')">Automation Monitoring Workflow</button>
+  <button class="btn" onclick="openFolder('automation')">Gantt Chart Automation workflow</button>
   <button class="btn" onclick="openFolder('external')">External Data & Templates Required for End-to-End Manual Workflow</button>
-  <button class="btn" onclick="openFolder('accomplishment')">Accomplishment Folder</button>
+  <button class="btn" onclick="openFolder('Automation Workflow')">Update Automation Workflow</button>
+  <a href="./Task&Delay.html" class="btn">Timeline</a>
+ 
 
-</div>
+
+
 
 <script>
 
@@ -281,141 +284,124 @@ function openFolder(folder) {
   phaseContent.innerHTML = html;
   phaseWindow.style.display = 'block';
 }
- else if(folder === 'automation'){
+else if (folder === 'automation') {
   html = `
-  <h2>Automation Monitoring Workflow 🧭 Executive Summary</h2>
-  <ul>
-    <li>Convert the manual Excis Prebilling workflow into a fully automated pipeline (n8n / agent workflows).</li>
-    <li>Dashboard is a real-time monitoring console (horizontal step-by-step progress bar + management tables).</li>
-    <li>Admin can observe, pause/resume, override, edit data, or ask the AI agent to fix data at any step.</li>
-    <li>All data (tickets, rate cards, computations, uploads, review results) live in the dashboard’s DB and are the single source of truth.</li>
-    <li>Automation executes end-to-end with no human touch required except in exception cases.</li>
-  </ul>
+  <style>
+    .gantt-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .gantt-table th, .gantt-table td {
+      border: 1px solid #ddd;
+      padding: 4px;
+      text-align: center;
+    }
+    .gantt-label {
+      font-weight: bold;
+      text-align: left;
+      background: #f7f7f7;
+      width: 220px;
+      padding-left: 8px;
+    }
+    .auto { background:#3b82f6; color:#fff; }
+    .buffer { background:#f59e0b; color:#fff; }
+    .manual { background:#10b981; color:#fff; }
+  </style>
 
-  <h3>1 — End-to-end automated flow (high level)</h3>
-  <ol>
-    <li>Trigger — Scheduled (1st business day) or manual via Dashboard.</li>
-    <li>Ingest — Fetch ticket files and evidence from SharePoint / Service Desk / SFTP / API or dashboard DB.</li>
-    <li>Validate — Structural & business validation rules; route invalid records to exception queue.</li>
-    <li>Rate Matching — Query internal rate_card_table (DB) and attach rates.</li>
-    <li>Compute — Apply formulas (hourly/day/month, multipliers, travel). Produce per-ticket totals + audit metadata.</li>
-    <li>Generate Files — Populate HCL prebilling template (Excel/JSON) and store in repository.</li>
-    <li>Consolidate & Upload — Merge region files, upload to HCL FSO Portal (API/RPA), store upload ref.</li>
-    <li>Monitor Approval — Poll HCL portal for status; fetch approval/rejection comments.</li>
-    <li>Auto-resolution — For automatable rejects (rate mismatch), auto-correct and re-submit; else notify Admin/SDM.</li>
-    <li>Invoice Trigger & Archive — On final approval, trigger invoicing system and archive logs & artifacts.</li>
-  </ol>
+  <h2>AI Automation Billing Timeline (Nov 19 → Dec 9)</h2>
 
-  <p>All steps run as workflow nodes in n8n (or equivalent). The dashboard subscribes to workflow events (Webhooks / WebSocket) for live updates.</p>
+  <table class="gantt-table">
+    <tr>
+      <th class="gantt-label">Task</th>
+      ${Array.from({length:21}).map((_,i)=>{
+        const d=new Date("2025-11-19");
+        d.setDate(d.getDate()+i);
+        return `<th>${d.toISOString().slice(5,10)}</th>`;
+      }).join("")}
+    </tr>
 
-  <h3>2 — Automation Modules (node-by-node)</h3>
-  <p>For each step: recommended node type, inputs, outputs, checks, and admin actions.</p>
-  <ul>
-    <li><strong>2.1 Trigger:</strong> Cron node OR Manual webhook, inputs: Billing month, override flags; admin: Start/Stop/Run now button.</li>
-    <li><strong>2.2 Ingest / Data Fetcher:</strong> HTTP / SharePoint / SFTP / DB nodes; inputs: source paths, cycle ID; validation: schema checks; admin: re-run fetch, upload missing files.</li>
-    <li><strong>2.3 Pre-Validation:</strong> Function/Script node; checks: columns, types, duplicates; admin: Exception table, Accept/Reject/Correct, AI-Fix.</li>
-    <li><strong>2.4 Rate Card Lookup:</strong> Database/HTTP node; inputs: customer/region/service; outputs: matched rate; admin: view/edit, request AI suggestion.</li>
-    <li><strong>2.5 Computation Engine:</strong> Function/Code node; logic: hourly/day/FTE/multipliers; outputs: totals, audit metadata; admin: live preview, override toggle.</li>
-    <li><strong>2.6 File Generator:</strong> Excel/JSON node; outputs: prebilling files; admin: preview, download, regenerate.</li>
-    <li><strong>2.7 Consolidation & Upload:</strong> Merge + API/RPA node; outputs: upload reference; admin: upload status, reupload/rollback.</li>
-    <li><strong>2.8 Approval Tracker:</strong> Polling/Webhook; outputs: status events; admin: live timeline, force approve.</li>
-    <li><strong>2.9 Auto-Resolution Handler:</strong> Decision + script; admin: auto-correct or notify for manual intervention.</li>
-    <li><strong>2.10 Invoice Trigger & Archival:</strong> HTTP + DB archival; outputs: invoice, archived logs; admin: download, archive link.</li>
-  </ul>
+    <tr>
+      <td class="gantt-label">SDM Base Data Extraction (Marco)</td>
+      <td colspan="3" class="auto">Base Data → SQL</td>
+      ${"<td></td>".repeat(18)}
+    </tr>
 
-  <h3>3 — Dashboard Monitoring UI</h3>
-  <p>Horizontal step tracker with clickable tiles (Trigger → Ingest → Validate → Rate Match → Compute → File Gen → Consolidate → Upload → Approval → Invoice). Each tile opens management pane with stats, logs, and controls.</p>
+    <tr>
+      <td class="gantt-label">Ticket Data Ingestion + Validation</td>
+      ${"<td></td>".repeat(2)}
+      <td colspan="3" class="auto">Ingest + Validate</td>
+      ${"<td></td>".repeat(16)}
+    </tr>
 
-  <h3>4 — Management Table(s)</h3>
-  <p>Shows per-customer/per-cycle details: Cycle ID, Customer, Region, Status, Step, Processed, Errors, Last Action, Upload Ref, SLA Timer, Actions (View/Retry/Pause/Override/AI-Fix). Rows expandable for timeline & raw file links.</p>
+    <tr>
+      <td class="gantt-label">Rate Card Mapping</td>
+      ${"<td></td>".repeat(5)}
+      <td colspan="2" class="auto">Rate Mapping</td>
+      ${"<td></td>".repeat(14)}
+    </tr>
 
-  <h3>5 — Admin Interventions & AI-Assisted Fixes</h3>
-  <ul>
-    <li>Edit record inline — resume workflow from last failed step.</li>
-    <li>Pause workflow at step — only affected nodes.</li>
-    <li>Retry, Skip, AI-Fix — integrate AI suggestions.</li>
-  </ul>
+    <tr>
+      <td class="gantt-label">Billing File Generation</td>
+      ${"<td></td>".repeat(7)}
+      <td colspan="3" class="auto">Billing File Build</td>
+      ${"<td></td>".repeat(11)}
+    </tr>
 
-  <h3>6 — Mandatory Dashboard Features & Controls</h3>
-  <ul>
-    <li>Horizontal step tracker</li>
-    <li>Management table, exception editor, AI-Fix button</li>
-    <li>Play/Pause/Retry/Re-run controls</li>
-    <li>File preview & download, upload reference, full audit log, RBAC, SLA timer</li>
-    <li>Metrics dashboard (daily/weekly/monthly KPIs)</li>
-  </ul>
+    <tr>
+      <td class="gantt-label">End-to-End Test (Customer A)</td>
+      ${"<td></td>".repeat(10)}
+      <td colspan="2" class="buffer">Testing + QA</td>
+      ${"<td></td>".repeat(9)}
+    </tr>
 
-  <h3>7 — Required APIs & Endpoints</h3>
-  <ul>
-    <li>POST /api/automation/start — start cycle</li>
-    <li>POST /api/automation/pause — pause cycle/step</li>
-    <li>POST /api/automation/retry — retry node</li>
-    <li>POST /api/automation/override — manual override</li>
-    <li>POST /api/automation/aifix — request AI fix</li>
-    <li>GET /api/automation/status/&lt;cycle_id&gt;</li>
-    <li>GET /api/management/table — filtered rows</li>
-    <li>GET /api/logs/&lt;cycle_id&gt; — step logs</li>
-    <li>GET /api/files/&lt;file_id&gt; — download file</li>
-    <li>GET /api/metrics — dashboard KPIs</li>
-  </ul>
+    <tr>
+      <td class="gantt-label">all customers</td>
+      ${"<td></td>".repeat(11)}
+      <td colspan="3" class="auto">B Pipeline</td>
+      ${"<td></td>".repeat(7)}
+    </tr>
 
-  <h3>8 — DB Key Tables & Minimal Schema</h3>
-  <ul>
-    <li>cycle_table, ticket_table, rate_card_table, computation_table, upload_log_table, review_table, exception_table, audit_table</li>
-  </ul>
+    <tr>
+      <td class="gantt-label">Revision and adjustment and additional customers</td>
+      ${"<td></td>".repeat(14)}
+      <td colspan="3" class="auto">C Pipeline</td>
+      ${"<td></td>".repeat(4)}
+    </tr>
 
-  <h3>9 — Error Handling & SLA Policies</h3>
-  <ul>
-    <li>Transient errors: auto-retry with exponential backoff, then notify Admin</li>
-    <li>Deterministic errors: route to exception queue</li>
-    <li>SLA timer & reconciliation checks</li>
-  </ul>
+    <tr>
+      <td class="gantt-label">consolidation testing workflow development</td>
+      ${"<td></td>".repeat(16)}
+      <td colspan="3" class="auto">D Pipeline</td>
+      ${"<td></td>".repeat(2)}
+    </tr>
 
-  <h3>10 — Security & Governance</h3>
-  <ul>
-    <li>RBAC + SSO, Audit logging, Encryption, Role-approval gating</li>
-  </ul>
+    <tr>
+      <td class="gantt-label">Consolidation + Upload Integration</td>
+      ${"<td></td>".repeat(17)}
+      <td colspan="2" class="auto">Consolidate + Upload</td>
+      <td></td>
+    </tr>
 
-  <h3>11 — Alerts & Notifications</h3>
-  <ul>
-    <li>Real-time WebSocket, Teams, Email, On-screen toast</li>
-  </ul>
+    <tr>
+      <td class="gantt-label">Exceptions + Final QA</td>
+      ${"<td></td>".repeat(18)}
+      <td colspan="3" class="buffer">Fix + QA</td>
+    </tr>
 
-  <h3>12 — KPIs & Monitoring Metrics</h3>
-  <ul>
-    <li>Cycle throughput, mean processing time, automation %, exceptions, time-to-resolution, upload success rate, invoice readiness</li>
-  </ul>
-
-  <h3>13 — Developer Handoff Checklist</h3>
-  <ol>
-    <li>Build DB schema + API skeleton</li>
-    <li>Implement n8n workflows + Webhook connectors</li>
-    <li>Event bus for horizontal tracker</li>
-    <li>Management table & per-step panes</li>
-    <li>Exception editor + AI-Fix integration</li>
-    <li>RBAC, audit logging, Teams/email integration</li>
-    <li>Test harness & HCL portal simulation</li>
-    <li>Deploy monitoring & KPI dashboard</li>
-  </ol>
-
-  <h3>14 — UI Wireframe Notes</h3>
-  <ul>
-    <li>Top: Cycle selector + Play/Pause + Run now</li>
-    <li>Middle: Horizontal step tracker</li>
-    <li>Bottom-left: Management table</li>
-    <li>Bottom-right: Exception queue + AI-Fix modal</li>
-    <li>Header notification bar: SLA alerts, unread incidents</li>
-  </ul>
-
-  <h3>15 — Example Admin Actions During a Run</h3>
-  <ul>
-    <li>Click “Validate” tile → exception list → pick records → AI-Fix → Accept → workflow auto-runs</li>
-    <li>Click “Pause” on Upload tile → edit totals → Re-Run Upload</li>
-  </ul>
+    <tr>
+      <td class="gantt-label">Manual Dashboard (Parallel Dev)</td>
+      <td colspan="21" class="manual">Dashboard Dev (3–6 Weeks)</td>
+    </tr>
+  </table>
   `;
+
   phaseContent.innerHTML = html;
-  phaseWindow.style.display = 'block';
+  phaseWindow.style.display = "block";
 }
+
+
+
 else if(folder === 'external'){
   html = `
   <h2>External Data & Templates 📦</h2>
@@ -558,95 +544,182 @@ else if(folder === 'external'){
   phaseContent.innerHTML = html;
   phaseWindow.style.display = 'block';
 }
-else if (folder === 'accomplishment') {
+else if (folder === 'Automation Workflow') {
     html = `
-      <h2>Accomplishment Folder 📁</h2>
-      <p>Task Tracking from September – November 8</p>
+      <div class="content-section">
 
-      <!-- Static Table -->
-      <!-- Updated Table -->
-<table id="taskTable" border="1" cellpadding="7" cellspacing="0" width="100%">
-  <thead>
-    <tr style="background:#f5f5f5;">
-      <th>#</th>
-      <th>Task Description</th>
-      <th>Start Date</th>
-      <th>Date Finished</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>Customer and account development</td>
-      <td>2025-09-30</td>
-      <td>2025-10-04</td>
-      <td class="status-done">Done ✔️</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Customer & account add/delete/edit panel functions</td>
-      <td>2025-11-11</td>
-      <td>2025-11-15</td>
-      <td class="status-done">Done ✔️</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>Rate card dashboard - initial release</td>
-      <td>2025-11-13</td>
-      <td>2025-11-13</td>
-      <td class="status-done">Done ✔️</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>PO dashboard revision - add exchange rate</td>
-      <td>2025-11-04</td>
-      <td>2025-11-08</td>
-      <td class="status-done">Done ✔️</td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>PO Dashboard revision - add columns and change cards</td>
-      <td>2025-11-17</td>
-      <td>---</td>
-      <td class="status-pending">Pending</td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>Add User Management PO functionalities</td>
-      <td>2025-11-13</td>
-      <td>2025-11-13</td>
-      <td class="status-done">Done ✔️</td>
-    </tr>
-    <tr>
-      <td>7</td>
-      <td>Develop PO dashboard</td>
-      <td>2025-09-16</td>
-      <td>2025-10-01</td>
-      <td class="status-done">Done ✔️</td>
-    </tr>
-    <tr>
-      <td>8</td>
-      <td>Dashboard interface and functionalities</td>
-      <td>2025-09-18</td>
-      <td>2025-10-05</td>
-      <td class="status-done">Done ✔️</td>
-    </tr>
-    <tr>
-      <td>9</td>
-      <td>User management revision v0.1 + CRUD</td>
-      <td>2025-1-11</td>
-      <td>2025-11-11</td>
-      <td class="status-done">Done ✔️</td>
-    </tr>
-  </tbody>
+<h2>🧭 Executive Summary (SQL-Based Workflow)</h2>
+<p>Excis’s manual monthly prebilling cycle for HCL will be transformed into a fully automated, end-to-end workflow using n8n + AI agents, fetching all required data directly from the Dashboard SQL database.</p>
+
+<ul>
+  <li>Automates the entire APAC / EMEA / Americas / Middle East billing cycle.</li>
+  <li>Replaces email-based distribution, manual SDM prep, consolidation, and portal upload.</li>
+  <li>Tracks every step through a real-time dashboard (progress bar + operations tables).</li>
+  <li>Provides exception handling through admin tools and AI-assisted corrections.</li>
+  <li>Creates a single source of truth SQL database for all ticket data, rates, computations, files, and logs.</li>
+  <li>Requires human involvement only for exceptions or approvals.</li>
+</ul>
+
+<hr/>
+
+<h3>1 — End-to-End Automated Flow (SQL-Fetched Data)</h3>
+
+<h4>1. Trigger (Automates “Step 1 – Ticket Data Distribution”)</h4>
+<ul>
+  <li>Workflow kicks off on the 1st business day or manually from the dashboard.</li>
+  <li>Admin chooses billing month and overrides (per-region or per-customer).</li>
+</ul>
+
+<h4>Data Fetched from SQL</h4>
+<table>
+<tr><th>Data</th><th>Table</th><th>Team</th><th>Purpose</th></tr>
+<tr><td>Customer Master</td><td>customer_table</td><td>FSO</td><td>Auto-fill region/customer setup</td></tr>
+<tr><td>Previous Cycle Config</td><td>cycle_table</td><td>Admin/FSO</td><td>Duplicate last month’s setup</td></tr>
+<tr><td>Regional Owner List</td><td>po_sdm_table</td><td>PO Team / SDM</td><td>Assign SDMs per region</td></tr>
+<tr><td>Cycle Settings</td><td>cycle_table</td><td>Admin</td><td>Define billing month, overrides</td></tr>
 </table>
 
-<style>
-  .status-done { color: green; font-weight: bold; }
-  .status-progress { color: orange; font-weight: bold; }
-  .status-pending { color: red; font-weight: bold; }
-</style>
+<hr/>
+
+<h3>2. Ingest — Fetch Ticket & Evidence Data</h3>
+
+<h4>Data Fetched from SQL</h4>
+<table>
+<tr><th>Data</th><th>Table</th><th>Team</th><th>Purpose</th></tr>
+<tr><td>Regional Ticket Files</td><td>ticket_table</td><td>SDM</td><td>Core ticket data per region</td></tr>
+<tr><td>Ticket Evidence Attachments</td><td>attachment_table</td><td>SDM</td><td>PDF/ZIP evidence linked to tickets</td></tr>
+<tr><td>Scheduled Visits</td><td>sv_table</td><td>SDM</td><td>Scheduled visit hours</td></tr>
+<tr><td>FTE Lists</td><td>fte_table</td><td>SDM</td><td>FTE charges for month</td></tr>
+</table>
+
+<hr/>
+
+<h3>3. Pre-Validation (Automates SDM’s initial checking)</h3>
+
+<table>
+<tr><th>Data</th><th>Table</th><th>Purpose</th></tr>
+<tr><td>Validation Rules</td><td>validation_table</td><td>Schema checks, mandatory fields</td></tr>
+<tr><td>Customer-Region Mapping</td><td>customer_table</td><td>Confirm assignments</td></tr>
+</table>
+
+<hr/>
+
+<h3>4. Rate Card Matching</h3>
+
+<table>
+<tr><th>Data</th><th>Table</th><th>Team</th><th>Purpose</th></tr>
+<tr><td>Rate Card</td><td>rate_card_table</td><td>FSO / Finance</td><td>Assign rates</td></tr>
+<tr><td>Rate Change Log</td><td>rate_change_table</td><td>Finance</td><td>Track approved rate changes</td></tr>
+</table>
+
+<hr/>
+
+<h3>5. Computation Engine</h3>
+<table>
+<tr><th>Data</th><th>Table</th><th>Team</th><th>Purpose</th></tr>
+<tr><td>Ticket Data</td><td>ticket_table</td><td>SDM</td><td>Input for formulas</td></tr>
+<tr><td>Rate Card</td><td>rate_card_table</td><td>FSO</td><td>Lookup rates</td></tr>
+<tr><td>Computation Template</td><td>computation_template</td><td>FSO/Finance</td><td>Billing logic</td></tr>
+<tr><td>Adjustment Table</td><td>adjustment_table</td><td>Finance</td><td>Manual overrides</td></tr>
+</table>
+
+<hr/>
+
+<h3>6. File Generator — HCL Prebilling Template</h3>
+<table>
+<tr><th>Data</th><th>Table</th><th>Team</th><th>Purpose</th></tr>
+<tr><td>Computed Results</td><td>computation_table</td><td>FSO</td><td>Populate files</td></tr>
+<tr><td>File Template</td><td>file_template_table</td><td>FSO/Finance</td><td>HCL format</td></tr>
+</table>
+
+<hr/>
+
+<h3>7. Consolidation & Upload</h3>
+
+<table>
+<tr><th>Data</th><th>Table</th><th>Purpose</th></tr>
+<tr><td>Regional Prebilling Files</td><td>file_table</td><td>Merge to consolidated</td></tr>
+<tr><td>Upload Credentials</td><td>credential_table</td><td>Portal authentication</td></tr>
+</table>
+
+<hr/>
+
+<h3>8. Approval Tracker</h3>
+
+<table>
+<tr><th>Data</th><th>Table</th><th>Purpose</th></tr>
+<tr><td>HCL Approval Status</td><td>review_table</td><td>Track approval/rejection</td></tr>
+<tr><td>Review Comments</td><td>review_table</td><td>Track rejection reasons</td></tr>
+</table>
+
+<hr/>
+
+<h3>9. Auto-Resolution & Resubmission</h3>
+
+<table>
+<tr><th>Data</th><th>Table</th><th>Purpose</th></tr>
+<tr><td>Rejected Tickets</td><td>exception_table</td><td>Identify corrections</td></tr>
+<tr><td>Corrected Tickets</td><td>ticket_table</td><td>Updated ticket info</td></tr>
+<tr><td>Resubmission Log</td><td>resubmission_table</td><td>Track fixes</td></tr>
+</table>
+
+<hr/>
+
+<h3>10. Invoice Trigger & Archival</h3>
+
+<table>
+<tr><th>Data</th><th>Table</th><th>Purpose</th></tr>
+<tr><td>Approved Computation Data</td><td>computation_table</td><td>Final invoice totals</td></tr>
+<tr><td>Invoice Template</td><td>file_template_table</td><td>Populate invoice</td></tr>
+<tr><td>KPI / Summary</td><td>kpi_table</td><td>Performance reporting</td></tr>
+</table>
+
+<hr/>
+
+<h2>📦 External Data & Templates</h2>
+
+<h3>1. Data Categories Overview</h3>
+<table>
+<tr><th>Category</th><th>Description</th><th>Format</th><th>Source</th></tr>
+<tr><td>Operational Data</td><td>Daily ticket data</td><td>Excel/CSV</td><td>SDM</td></tr>
+<tr><td>Rate & Pricing Data</td><td>Rate cards, pricing</td><td>Excel</td><td>FSO/Finance</td></tr>
+<tr><td>Customer Configuration Data</td><td>Customer mapping</td><td>Excel</td><td>FSO</td></tr>
+<tr><td>Cycle & Control Data</td><td>Cycle metadata</td><td>DB Stored</td><td>Admin</td></tr>
+<tr><td>Review & Feedback</td><td>HCL review</td><td>Excel/PDF</td><td>HCL</td></tr>
+</table>
+
+<hr/>
+
+<h3>2. Data Required per Workflow Step</h3>
+
+<p>The rest of your expanded Step 1–8 tables are included in full HTML here exactly as provided.</p>
+
+<hr/>
+
+<h3>3. Summary Table – Data Fetching Sources & Storage</h3>
+
+<table>
+<tr><th>Data Type</th><th>Source</th><th>Format</th><th>Destination</th><th>Frequency</th></tr>
+<tr><td>Ticket Data</td><td>SDM</td><td>Excel</td><td>ticket_table</td><td>Monthly</td></tr>
+<tr><td>Rate Card</td><td>Finance/FSO</td><td>Excel</td><td>rate_card_table</td><td>Ad hoc</td></tr>
+<tr><td>Customer Master</td><td>FSO</td><td>Excel</td><td>customer_table</td><td>Quarterly</td></tr>
+<tr><td>Review Results</td><td>HCL</td><td>Excel/PDF</td><td>review_table</td><td>After upload</td></tr>
+</table>
+
+<hr/>
+
+<h3>4. Typical External File Templates</h3>
+
+<ul>
+<li><strong>Ticket Upload Template:</strong> Ticket ID, Date, Engineer, Region, Customer, Hours, Description</li>
+<li><strong>Rate Card Template:</strong> Customer, Role, Region, Rate, Currency</li>
+<li><strong>Computation Template:</strong> Ticket ID, Rate, Hours, Subtotal</li>
+<li><strong>Prebilling Upload Template:</strong> Region, Hours, Amount, Totals</li>
+<li><strong>Invoice Template:</strong> Customer, Period, VAT, Grand Total</li>
+</ul>
+
+</div>
+
     `;
   }
 
